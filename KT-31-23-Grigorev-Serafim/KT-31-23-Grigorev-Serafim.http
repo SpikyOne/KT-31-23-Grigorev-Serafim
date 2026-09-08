@@ -1,0 +1,6 @@
+@KT_31_23_Grigorev_Serafim_HostAddress = http://localhost:5273
+
+GET {{KT_31_23_Grigorev_Serafim_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
