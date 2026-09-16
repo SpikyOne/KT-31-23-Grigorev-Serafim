@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 
+
+
+
 namespace KT_31_23_Grigorev_Serafim.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -21,6 +26,10 @@ namespace KT_31_23_Grigorev_Serafim.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+
+            // ƒобавленна€ строчка тестового логировани€
+            _logger.LogError("Method was called");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -28,6 +37,22 @@ namespace KT_31_23_Grigorev_Serafim.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+
         }
+
+
+        [HttpPost(Name = "AddNewSummary")]
+        public string[] AddNewSummary(string newSummary)
+        {
+
+            _logger.LogError("New method was called");
+
+            var list = Summaries.ToList();
+            list.Add(newSummary);
+            
+            return list.ToArray();
+
+        }
+
     }
 }

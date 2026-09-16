@@ -1,21 +1,55 @@
-var builder = WebApplication.CreateBuilder(args);
+using NLog;
+using NLog.Web;
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Инициализация логгера до сборки хоста
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
+
+try
 {
-    app.MapOpenApi();
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Очищаем стандартное логирование и подключаем NLog
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
+
+    // Добавляем сервисы в контейнер
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    var app = builder.Build();
+
+    // Настройка пайплайна обработки запросов
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseAuthorization();
+    app.MapControllers();
+
+    app.Run();
 }
 
-app.UseAuthorization();
+catch (Exception ex)
+{
 
-app.MapControllers();
+    // Логируем фатальную ошибку, если приложение упало при запуске
+    logger.Error(ex, "Stopped program because of exception");
+    throw;
 
-app.Run();
+}
+
+finally
+{
+
+    // Гарантированно освобождаем ресурсы NLog
+    NLog.LogManager.Shutdown();
+
+}
