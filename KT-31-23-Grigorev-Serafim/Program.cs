@@ -1,5 +1,7 @@
 using NLog;
 using NLog.Web;
+using KT_31_23_Grigorev_Serafim.Database;
+using Microsoft.EntityFrameworkCore;
 
 
 
@@ -21,6 +23,9 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     var app = builder.Build();
 
