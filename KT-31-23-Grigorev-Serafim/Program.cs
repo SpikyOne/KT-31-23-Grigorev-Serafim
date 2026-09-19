@@ -1,7 +1,8 @@
+using KT_31_23_Grigorev_Serafim.Database;
+using KT_31_23_Grigorev_Serafim.ServiceExtensions;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
-using KT_31_23_Grigorev_Serafim.Database;
-using Microsoft.EntityFrameworkCore;
 
 
 
@@ -27,6 +28,7 @@ try
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+    builder.Services.AddServices();
     var app = builder.Build();
 
     // Настройка пайплайна обработки запросов
