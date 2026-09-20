@@ -16,6 +16,7 @@ namespace KT_31_23_Grigorev_Serafim.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        // TODO: Перенести логгирование в другие методы
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
