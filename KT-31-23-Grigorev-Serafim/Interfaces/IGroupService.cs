@@ -9,11 +9,15 @@ namespace KT_31_23_Grigorev_Serafim.Interfaces
 {
     public interface IGroupService
     {
+
         Task<GroupResponse[]> GetGroupsByFilterAsync(GroupFilter filter, CancellationToken cancellationToken);
 
+        Task<GroupResponse> AddGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken = default);
+        
+        Task<GroupResponse> UpdateGroupAsync(UpdateGroupRequest request, CancellationToken cancellationToken = default);
 
-        Task DeleteGroupAsync(int groupId, CancellationToken cancellationToken);
-        // TODO: Сюда же ДОБАВИТЬ методы Add и Update
+        Task DeleteGroupAsync(int groupId, CancellationToken cancellationToken = default);
+
     }
-}
 
+}

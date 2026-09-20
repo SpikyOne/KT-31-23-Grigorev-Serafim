@@ -25,6 +25,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
 
         public async Task<GroupResponse[]> GetGroupsByFilterAsync(GroupFilter filter, CancellationToken cancellationToken = default)
         {
+
             var query = _dbContext.Groups.AsQueryable();
 
             if (!string.IsNullOrEmpty(filter.SpecialtyName))
@@ -45,27 +46,95 @@ namespace KT_31_23_Grigorev_Serafim.Services
                 SpecialtyName = g.Specialty.Title // EF Core сам сделает JOIN нужной таблицы
             }).ToArrayAsync(cancellationToken);
 
+
             return groups;
+
         }
 
 
-        public async Task DeleteGroupAsync(int groupId, CancellationToken cancellationToken)
+        public async Task<GroupResponse> AddGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken = default)
         {
+
+            var group = new Group
+            {
+                Name = request.Name,
+                Course = request.Course,
+                SpecialtyId = request.SpecialtyId,
+                IsDeleted = false
+            };
+
+            await _dbContext.Groups.AddAsync(group, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Подгружаем специальность для корректного формирования ответа
+            await _dbContext.Entry(group).Reference(g => g.Specialty).LoadAsync(cancellationToken);
+
+
+            return new GroupResponse
+            {
+                GroupId = group.GroupId,
+                Name = group.Name,
+                Course = group.Course,
+                SpecialtyName = group.Specialty.Title
+            };
+
+        }
+
+
+        public async Task<GroupResponse> UpdateGroupAsync(UpdateGroupRequest request, CancellationToken cancellationToken = default)
+        {
+
+            var group = await _dbContext.Groups
+                .Include(g => g.Specialty)
+                .FirstOrDefaultAsync(g => g.GroupId == request.GroupId, cancellationToken);
+
+            if (group == null) throw new Exception("Группа не найдена");
+
+            group.Name = request.Name;
+            group.Course = request.Course;
+            group.SpecialtyId = request.SpecialtyId;
+            group.IsDeleted = request.IsDeleted;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Если специальность изменилась, подгружаем новые данные
+            await _dbContext.Entry(group).Reference(g => g.Specialty).LoadAsync(cancellationToken);
+
+
+            return new GroupResponse
+            {
+                GroupId = group.GroupId,
+                Name = group.Name,
+                Course = group.Course,
+                SpecialtyName = group.Specialty.Title
+            };
+
+        }
+
+
+        public async Task DeleteGroupAsync(int groupId, CancellationToken cancellationToken = default)
+        {
+
             var group = await _dbContext.Groups.FirstOrDefaultAsync(g => g.GroupId == groupId, cancellationToken);
+
             if (group != null)
             {
-                // Если подразумевается физическое удаление:
-                _dbContext.Groups.Remove(group);
-                // Благодаря OnDelete(DeleteBehavior.Cascade) в GroupConfiguration, студенты удалятся автоматически
 
-                // Если подразумевается логическое удаление (Soft Delete):
-                // group.IsDeleted = true;
-                // var students = await _dbContext.Students.Where(s => s.GroupId == groupId).ToListAsync();
-                // students.ForEach(s => s.IsDeleted = true);
+                // Логическое удаление группы
+                group.IsDeleted = true;
+
+                // Поиск всех студентов этой группы и их логическое удаление
+                var students = await _dbContext.Students
+                    .Where(s => s.GroupId == groupId)
+                    .ToListAsync(cancellationToken);
+
+                foreach (var student in students) student.IsDeleted = true;
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
+
         }
+
     }
 
 }
