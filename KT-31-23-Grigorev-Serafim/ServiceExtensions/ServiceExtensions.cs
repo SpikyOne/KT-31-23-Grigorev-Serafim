@@ -22,6 +22,13 @@ namespace KT_31_23_Grigorev_Serafim.ServiceExtensions
             // Сервис № 3. Список дисциплин с фильтрацией
             services.AddScoped<IDisciplineService, DisciplineService>();
 
+            // Сервис № 4. Получение успеваемости.
+            // Три запроса:
+                // 1. Средний балл по предмету в группе
+                // 2. Оценка у конкретного студента
+                // 3. Средний балл по году
+            services.AddScoped<IGradeService, GradeService>();
+
 
             return services;
 
