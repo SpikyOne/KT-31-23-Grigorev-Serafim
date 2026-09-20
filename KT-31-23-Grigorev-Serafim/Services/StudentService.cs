@@ -2,6 +2,7 @@
 using KT_31_23_Grigorev_Serafim.DTOs.Students;
 using KT_31_23_Grigorev_Serafim.Filters;
 using KT_31_23_Grigorev_Serafim.Interfaces;
+using KT_31_23_Grigorev_Serafim.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -51,6 +52,83 @@ namespace KT_31_23_Grigorev_Serafim.Services
             }).ToArrayAsync(cancellationToken);
 
             return students;
+
+        }
+
+
+        public async Task<StudentResponse> AddStudentAsync(CreateStudentRequest request, CancellationToken cancellationToken = default)
+        {
+
+            var student = new Student
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                GroupId = request.GroupId,
+                IsDeleted = false
+            };
+
+            await _dbContext.Students.AddAsync(student, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Подгружаем группу для корректного формирования ответа с именем группы
+            await _dbContext.Entry(student).Reference(s => s.Group).LoadAsync(cancellationToken);
+
+
+            return new StudentResponse
+            {
+                StudentId = student.StudentId,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                GroupName = student.Group.Name,
+                IsDeleted = student.IsDeleted
+            };
+
+        }
+
+
+        public async Task<StudentResponse> UpdateStudentAsync(UpdateStudentRequest request, CancellationToken cancellationToken = default)
+        {
+
+            var student = await _dbContext.Students
+                .Include(s => s.Group)
+                .FirstOrDefaultAsync(s => s.StudentId == request.StudentId, cancellationToken);
+
+            if (student == null) throw new Exception("Студент не найден");
+
+            student.FirstName = request.FirstName;
+            student.LastName = request.LastName;
+            student.GroupId = request.GroupId;
+            student.IsDeleted = request.IsDeleted;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Если группа изменилась, подгружаем новые данные
+            await _dbContext.Entry(student).Reference(s => s.Group).LoadAsync(cancellationToken);
+
+
+            return new StudentResponse
+            {
+                StudentId = student.StudentId,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                GroupName = student.Group.Name,
+                IsDeleted = student.IsDeleted
+            };
+
+        }
+
+
+        public async Task DeleteStudentAsync(int studentId, CancellationToken cancellationToken = default)
+        {
+
+            var student = await _dbContext.Students.FirstOrDefaultAsync(s => s.StudentId == studentId, cancellationToken);
+
+            if (student != null)
+            {
+                // Логическое удаление студента
+                student.IsDeleted = true;
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
 
         }
 
