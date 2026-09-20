@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using KT_31_23_Grigorev_Serafim.Interfaces;
+﻿using KT_31_23_Grigorev_Serafim.DTOs.Grades;
 using KT_31_23_Grigorev_Serafim.Filters;
+using KT_31_23_Grigorev_Serafim.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 
 
@@ -62,6 +63,34 @@ namespace KT_31_23_Grigorev_Serafim.Controllers
 
             return NotFound("Оценки для данного курса не найдены");
 
+        }
+
+
+        [HttpPost("AddGrade")]
+        public async Task<IActionResult> AddGradeAsync([FromBody] CreateGradeRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _gradeService.AddGradeAsync(request, cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPut("UpdateGrade")]
+        public async Task<IActionResult> UpdateGradeAsync([FromBody] UpdateGradeRequest request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _gradeService.UpdateGradeAsync(request, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+
+        [HttpDelete("DeleteGrade")]
+        public async Task<IActionResult> DeleteGradeAsync(int gradeId, CancellationToken cancellationToken)
+        {
+            await _gradeService.DeleteGradeAsync(gradeId, cancellationToken);
+            return Ok();
         }
 
     }

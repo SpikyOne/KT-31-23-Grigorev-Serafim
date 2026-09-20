@@ -20,6 +20,15 @@ namespace KT_31_23_Grigorev_Serafim.Interfaces
         // Средний балл по году (курсу)
         Task<double?> GetAverageGradeByCourseAsync(int course, CancellationToken cancellationToken = default);
 
+
+        Task<GradeResponse> AddGradeAsync(CreateGradeRequest request, CancellationToken cancellationToken = default);
+        
+
+        Task<GradeResponse> UpdateGradeAsync(UpdateGradeRequest request, CancellationToken cancellationToken = default);
+        
+        
+        Task DeleteGradeAsync(int gradeId, CancellationToken cancellationToken = default);
+
     }
 
 }
