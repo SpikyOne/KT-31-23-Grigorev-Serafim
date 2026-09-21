@@ -1,4 +1,9 @@
-﻿namespace KT_31_23_Grigorev_Serafim.Models
+﻿using System.Text.RegularExpressions;
+
+
+
+
+namespace KT_31_23_Grigorev_Serafim.Models
 {
 
     /// <summary>
@@ -31,6 +36,19 @@
         // Навигационное свойство: у одной группы много студентов
         /// <summary>Коллекция студентов, входящих в группу</summary>
         public ICollection<Student> Students { get; set; } = new List<Student>();
+
+
+        /// <summary>
+        /// Проверка наименования группы на соответствие шаблону (например: КТ-31-23 или ИВТ-1-23)
+        /// </summary>
+        public bool IsValidGroupName()
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return false;
+
+            // Шаблон: 2-4 буквы кириллицы, дефис, 1-2 цифры, дефис, 2 цифры
+            var pattern = @"^[А-Яа-я]{2,4}-\d{1,2}-\d{2}$";
+            return Regex.IsMatch(Name, pattern);
+        }
 
     }
 
