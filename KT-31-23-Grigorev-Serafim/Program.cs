@@ -1,5 +1,6 @@
 using KT_31_23_Grigorev_Serafim.Database;
 using KT_31_23_Grigorev_Serafim.ServiceExtensions;
+using KT_31_23_Grigorev_Serafim.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NLog;
@@ -40,6 +41,9 @@ try
 
     builder.Services.AddServices();
     var app = builder.Build();
+
+    // Регистрация кастомного Middleware для обработки исключений
+    app.UseMiddleware<ExceptionHandlerMiddleware>();
 
     // Настройка пайплайна обработки запросов
     if (app.Environment.IsDevelopment())
