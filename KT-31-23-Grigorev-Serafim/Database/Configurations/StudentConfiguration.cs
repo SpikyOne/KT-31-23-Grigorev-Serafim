@@ -9,11 +9,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace KT_31_23_Grigorev_Serafim.Database.Configurations
 {
 
+    /// <summary>
+    /// Конфигурация Fluent API для сущности <see cref="Student"/>
+    /// </summary>
     public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
 
         private const string TableName = "cd_student";
 
+        /// <summary>
+        /// Конфигурирует маппинг студента на таблицу БД
+        /// </summary>
+        /// <param name="builder">Строитель конфигурации сущности</param>
         public void Configure(EntityTypeBuilder<Student> builder)
         {
             builder.ToTable(TableName);
@@ -54,6 +61,7 @@ namespace KT_31_23_Grigorev_Serafim.Database.Configurations
             builder.HasIndex(p => p.GroupId, $"idx_{TableName}_fk_f_group_id");
 
             builder.Navigation(p => p.Group).AutoInclude();
+
         }
 
     }

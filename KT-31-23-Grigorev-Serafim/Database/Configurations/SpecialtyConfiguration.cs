@@ -9,11 +9,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace KT_31_23_Grigorev_Serafim.Database.Configurations
 {
 
+    /// <summary>
+    /// Конфигурация Fluent API для сущности <see cref="Specialty"/>
+    /// </summary>
     public class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
     {
 
         private const string TableName = "cd_specialty";
 
+        /// <summary>
+        /// Конфигурирует маппинг специальности на таблицу БД
+        /// </summary>
+        /// <param name="builder">Строитель конфигурации сущности</param>
         public void Configure(EntityTypeBuilder<Specialty> builder)
         {
             builder.ToTable(TableName);

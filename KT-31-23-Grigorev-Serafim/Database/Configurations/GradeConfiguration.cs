@@ -9,11 +9,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace KT_31_23_Grigorev_Serafim.Database.Configurations
 {
 
+    /// <summary>
+    /// Конфигурация Fluent API для сущности <see cref="Grade"/>
+    /// </summary>
     public class GradeConfiguration : IEntityTypeConfiguration<Grade>
     {
 
         private const string TableName = "cd_grade";
 
+        /// <summary>
+        /// Конфигурирует маппинг оценки на таблицу БД и ее внешние ключи
+        /// </summary>
+        /// <param name="builder">Строитель конфигурации сущности</param>
         public void Configure(EntityTypeBuilder<Grade> builder)
         {
             builder.ToTable(TableName);

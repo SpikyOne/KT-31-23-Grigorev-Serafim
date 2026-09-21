@@ -11,18 +11,26 @@ using Microsoft.EntityFrameworkCore;
 namespace KT_31_23_Grigorev_Serafim.Services
 {
 
+    /// <summary>
+    /// Сервис для работы с учебными дисциплинами
+    /// </summary>
     public class DisciplineService : IDisciplineService
     {
 
         private readonly AppDbContext _dbContext;
 
 
+        /// <summary>
+        /// Инициализирует новый экземпляр сервиса дисциплин
+        /// </summary>
+        /// <param name="dbContext">Контекст базы данных</param>
         public DisciplineService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
 
+        /// <inheritdoc />
         public async Task<DisciplineResponse[]> GetDisciplinesByFilterAsync(DisciplineFilter filter, CancellationToken cancellationToken = default)
         {
         
@@ -52,6 +60,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<DisciplineResponse> AddDisciplineAsync(CreateDisciplineRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -75,6 +84,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<DisciplineResponse> UpdateDisciplineAsync(UpdateDisciplineRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -99,6 +109,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task DeleteDisciplineAsync(int disciplineId, CancellationToken cancellationToken = default)
         {
 

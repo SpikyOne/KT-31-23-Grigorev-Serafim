@@ -10,18 +10,26 @@ using Microsoft.EntityFrameworkCore;
 namespace KT_31_23_Grigorev_Serafim.Services
 {
 
+    /// <summary>
+    /// Сервис для управления успеваемостью и оценками
+    /// </summary>
     public class GradeService : IGradeService
     {
 
         private readonly AppDbContext _dbContext;
 
 
+        /// <summary>
+        /// Инициализирует новый экземпляр сервиса оценок
+        /// </summary>
+        /// <param name="dbContext">Контекст базы данных</param>
         public GradeService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
 
+        /// <inheritdoc />
         public async Task<GradeResponse[]> GetGradesByFilterAsync(GradeFilter filter, CancellationToken cancellationToken = default)
         {
         
@@ -55,6 +63,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<double?> GetAverageGradeByGroupAndDisciplineAsync(string groupName, string disciplineName, CancellationToken cancellationToken = default)
         {
 
@@ -70,6 +79,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<double?> GetAverageGradeByCourseAsync(int course, CancellationToken cancellationToken = default)
         {
             
@@ -85,6 +95,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<GradeResponse> AddGradeAsync(CreateGradeRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -116,6 +127,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<GradeResponse> UpdateGradeAsync(UpdateGradeRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -149,6 +161,8 @@ namespace KT_31_23_Grigorev_Serafim.Services
 
         }
 
+
+        /// <inheritdoc />
         public async Task DeleteGradeAsync(int gradeId, CancellationToken cancellationToken = default)
         {
 

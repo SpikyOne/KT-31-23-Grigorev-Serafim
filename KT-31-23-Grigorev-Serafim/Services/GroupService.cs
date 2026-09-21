@@ -11,18 +11,26 @@ using Microsoft.EntityFrameworkCore;
 namespace KT_31_23_Grigorev_Serafim.Services
 {
 
+    /// <summary>
+    /// Сервис для управления учебными группами
+    /// </summary>
     public class GroupService : IGroupService
     {
 
         private readonly AppDbContext _dbContext;
 
 
+        /// <summary>
+        /// Инициализирует новый экземпляр сервиса групп
+        /// </summary>
+        /// <param name="dbContext">Контекст базы данных</param>
         public GroupService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
 
+        /// <inheritdoc />
         public async Task<GroupResponse[]> GetGroupsByFilterAsync(GroupFilter filter, CancellationToken cancellationToken = default)
         {
 
@@ -52,6 +60,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<GroupResponse> AddGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -81,6 +90,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<GroupResponse> UpdateGroupAsync(UpdateGroupRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -112,6 +122,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task DeleteGroupAsync(int groupId, CancellationToken cancellationToken = default)
         {
 

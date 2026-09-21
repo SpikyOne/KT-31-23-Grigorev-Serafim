@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>KT_31_23_Grigorev_Serafim</RootNamespace>
+	  
+	  <!-- Включаем генерацию XML и отключаем предупреждения об отсутствующих комментариях -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

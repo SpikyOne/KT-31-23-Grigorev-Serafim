@@ -1,8 +1,10 @@
 using KT_31_23_Grigorev_Serafim.Database;
 using KT_31_23_Grigorev_Serafim.ServiceExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
+using System.Reflection;
 
 
 
@@ -23,7 +25,15 @@ try
     // Добавляем сервисы в контейнер
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Project Practicum. KT-31-23. Grigorev Serafim. Project API", Version = "v1" });
+
+        // Подключение XML-комментариев
+        var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+        options.IncludeXmlComments(xmlPath);
+    });
 
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

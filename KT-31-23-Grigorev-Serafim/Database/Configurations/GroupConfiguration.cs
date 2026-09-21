@@ -9,11 +9,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace KT_31_23_Grigorev_Serafim.Database.Configurations
 {
 
+    /// <summary>
+    /// Конфигурация Fluent API для сущности <see cref="Group"/>
+    /// </summary>
     public class GroupConfiguration : IEntityTypeConfiguration<Group>
     {
 
         private const string TableName = "cd_group";
 
+        /// <summary>
+        /// Конфигурирует маппинг учебной группы на таблицу БД
+        /// </summary>
+        /// <param name="builder">Строитель конфигурации сущности</param>
         public void Configure(EntityTypeBuilder<Group> builder)
         {
             builder.ToTable(TableName);

@@ -6,10 +6,18 @@ using KT_31_23_Grigorev_Serafim.Services;
 
 namespace KT_31_23_Grigorev_Serafim.ServiceExtensions
 {
+
+    /// <summary>
+    /// Методы расширения для регистрации сервисов бизнес-логики в DI-контейнере
+    /// </summary>
     public static class ServiceExtensions
     {
 
-        // Здесь необходимо регистрировать все сервисы
+        /// <summary>
+        /// Регистрирует пользовательские сервисы приложения в коллекцию сервисов
+        /// </summary>
+        /// <param name="services">Коллекция сервисов приложений</param>
+        /// <returns>Модифицированная коллекция сервисов</returns>
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             

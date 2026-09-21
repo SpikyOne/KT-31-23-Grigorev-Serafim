@@ -11,18 +11,26 @@ using Microsoft.EntityFrameworkCore;
 namespace KT_31_23_Grigorev_Serafim.Services
 {
 
+    /// <summary>
+    /// Сервис для управления студентами
+    /// </summary>
     public class StudentService : IStudentService
     {
 
         private readonly AppDbContext _dbContext;
 
 
+        /// <summary>
+        /// Инициализирует новый экземпляр сервиса студентов
+        /// </summary>
+        /// <param name="dbContext">Контекст базы данных</param>
         public StudentService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
 
+        /// <inheritdoc />
         public async Task<StudentResponse[]> GetStudentsByFilterAsync(StudentFilter filter, CancellationToken cancellationToken = default)
         {
 
@@ -56,6 +64,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<StudentResponse> AddStudentAsync(CreateStudentRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -86,6 +95,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task<StudentResponse> UpdateStudentAsync(UpdateStudentRequest request, CancellationToken cancellationToken = default)
         {
 
@@ -118,6 +128,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
         }
 
 
+        /// <inheritdoc />
         public async Task DeleteStudentAsync(int studentId, CancellationToken cancellationToken = default)
         {
 
