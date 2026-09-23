@@ -37,6 +37,9 @@ namespace KT_31_23_Grigorev_Serafim.ServiceExtensions
                 // 3. Средний балл по году
             services.AddScoped<IGradeService, GradeService>();
 
+            // Сервис № 5. Список дисциплин с оценкой 5 по фамилии студента
+            services.AddScoped<IStudentDisciplinesService, StudentDisciplinesService>();
+
 
             return services;
 
