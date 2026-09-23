@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KT_31_23_Grigorev_Serafim.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260916100548_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20260923112406_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
