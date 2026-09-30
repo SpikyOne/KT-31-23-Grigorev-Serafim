@@ -21,6 +21,9 @@ namespace KT_31_23_Grigorev_Serafim.ServiceExtensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             
+            // Сервис № 0. Полная очистка БД
+            services.AddScoped<IDatabaseService, DatabaseService>();
+
             // Сервис № 1. Список групп с фильтрацией
             services.AddScoped<IGroupService, GroupService>();
 

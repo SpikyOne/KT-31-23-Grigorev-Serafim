@@ -150,7 +150,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
                 .Include(g => g.Discipline)
                 .FirstOrDefaultAsync(g => g.GradeId == request.GradeId, cancellationToken);
 
-            if (grade == null) throw new Exception("Оценка не найдена");
+            if (grade == null) throw new KeyNotFoundException("Оценка не найдена");
 
             grade.Value = request.Value;
             grade.StudentId = request.StudentId;

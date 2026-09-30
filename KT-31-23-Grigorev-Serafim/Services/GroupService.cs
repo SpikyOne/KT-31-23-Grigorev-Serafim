@@ -106,7 +106,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
                 .Include(g => g.Specialty)
                 .FirstOrDefaultAsync(g => g.GroupId == request.GroupId, cancellationToken);
 
-            if (group == null) throw new Exception("Группа не найдена");
+            if (group == null) throw new KeyNotFoundException("Группа не найдена");
 
             group.Name = request.Name;
             group.Course = request.Course;

@@ -91,7 +91,7 @@ namespace KT_31_23_Grigorev_Serafim.Services
             var discipline = await _dbContext.Disciplines
                 .FirstOrDefaultAsync(d => d.DisciplineId == request.DisciplineId, cancellationToken);
 
-            if (discipline == null) throw new Exception("Дисциплина не найдена");
+            if (discipline == null) throw new KeyNotFoundException("Дисциплина не найдена");
 
             discipline.Name = request.Name;
             discipline.IsDeleted = request.IsDeleted;
