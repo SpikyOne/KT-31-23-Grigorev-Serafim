@@ -68,6 +68,11 @@ namespace KT_31_23_Grigorev_Serafim.Services
         public async Task<StudentResponse> AddStudentAsync(CreateStudentRequest request, CancellationToken cancellationToken = default)
         {
 
+            // Проверка перед созданием или обновлением
+            var groupExists = await _dbContext.Groups.AnyAsync(g => g.GroupId == request.GroupId, cancellationToken);
+            if (!groupExists) throw new ArgumentException($"Учебная группа с ID {request.GroupId} не найдена в базе данных.");
+
+
             var student = new Student
             {
                 FirstName = request.FirstName,
@@ -99,11 +104,16 @@ namespace KT_31_23_Grigorev_Serafim.Services
         public async Task<StudentResponse> UpdateStudentAsync(UpdateStudentRequest request, CancellationToken cancellationToken = default)
         {
 
+            // Проверка перед созданием или обновлением
+            var groupExists = await _dbContext.Groups.AnyAsync(g => g.GroupId == request.GroupId, cancellationToken);
+            if (!groupExists) throw new ArgumentException($"Учебная группа с ID {request.GroupId} не найдена в базе данных.");
+
+
             var student = await _dbContext.Students
                 .Include(s => s.Group)
                 .FirstOrDefaultAsync(s => s.StudentId == request.StudentId, cancellationToken);
 
-            if (student == null) throw new Exception("Студент не найден");
+            if (student == null) throw new KeyNotFoundException("Студент не найден");
 
             student.FirstName = request.FirstName;
             student.LastName = request.LastName;

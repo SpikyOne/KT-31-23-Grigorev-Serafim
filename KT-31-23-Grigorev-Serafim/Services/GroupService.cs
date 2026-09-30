@@ -64,6 +64,10 @@ namespace KT_31_23_Grigorev_Serafim.Services
         public async Task<GroupResponse> AddGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken = default)
         {
 
+            var specialtyExists = await _dbContext.Specialties.AnyAsync(s => s.SpecialtyId == request.SpecialtyId, cancellationToken);
+            if (!specialtyExists) throw new ArgumentException($"Специальность с ID {request.SpecialtyId} не найдена.");
+
+
             var group = new Group
             {
                 Name = request.Name,
@@ -93,6 +97,10 @@ namespace KT_31_23_Grigorev_Serafim.Services
         /// <inheritdoc />
         public async Task<GroupResponse> UpdateGroupAsync(UpdateGroupRequest request, CancellationToken cancellationToken = default)
         {
+
+            var specialtyExists = await _dbContext.Specialties.AnyAsync(s => s.SpecialtyId == request.SpecialtyId, cancellationToken);
+            if (!specialtyExists) throw new ArgumentException($"Специальность с ID {request.SpecialtyId} не найдена.");
+
 
             var group = await _dbContext.Groups
                 .Include(g => g.Specialty)

@@ -99,6 +99,13 @@ namespace KT_31_23_Grigorev_Serafim.Services
         public async Task<GradeResponse> AddGradeAsync(CreateGradeRequest request, CancellationToken cancellationToken = default)
         {
 
+            var studentExists = await _dbContext.Students.AnyAsync(s => s.StudentId == request.StudentId, cancellationToken);
+            if (!studentExists) throw new ArgumentException($"Студент с ID {request.StudentId} не найден.");
+
+            var disciplineExists = await _dbContext.Disciplines.AnyAsync(d => d.DisciplineId == request.DisciplineId, cancellationToken);
+            if (!disciplineExists) throw new ArgumentException($"Учебная дисциплина с ID {request.DisciplineId} не найдена.");
+
+
             var grade = new KT_31_23_Grigorev_Serafim.Models.Grade
             {
                 Value = request.Value,
@@ -130,6 +137,13 @@ namespace KT_31_23_Grigorev_Serafim.Services
         /// <inheritdoc />
         public async Task<GradeResponse> UpdateGradeAsync(UpdateGradeRequest request, CancellationToken cancellationToken = default)
         {
+
+            var studentExists = await _dbContext.Students.AnyAsync(s => s.StudentId == request.StudentId, cancellationToken);
+            if (!studentExists) throw new ArgumentException($"Студент с ID {request.StudentId} не найден.");
+
+            var disciplineExists = await _dbContext.Disciplines.AnyAsync(d => d.DisciplineId == request.DisciplineId, cancellationToken);
+            if (!disciplineExists) throw new ArgumentException($"Учебная дисциплина с ID {request.DisciplineId} не найдена.");
+
 
             var grade = await _dbContext.Grades
                 .Include(g => g.Student).ThenInclude(s => s.Group)

@@ -26,6 +26,7 @@ namespace KT_31_23_Grigorev_Serafim.Middlewares
             {
 
                 _logger.LogError("Exception", exception);
+
                 var httpResponse = context.Response;
                 httpResponse.ContentType = "application/json";
 
@@ -37,10 +38,22 @@ namespace KT_31_23_Grigorev_Serafim.Middlewares
 
                 switch (exception)
                 {
-                    default:
-                        httpResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        responseModel.Errors = new List<string> { exception.InnerException?.Message };
+
+                    case ArgumentException argEx:
+                        httpResponse.StatusCode = (int)HttpStatusCode.BadRequest; // 400 Bad Request
+                        responseModel.Errors = new List<string> { argEx.Message };
                         break;
+
+                    case KeyNotFoundException keyEx:
+                        httpResponse.StatusCode = (int)HttpStatusCode.NotFound; // 404 Not Found
+                        responseModel.Errors = new List<string> { keyEx.Message };
+                        break;
+
+                    default:
+                        httpResponse.StatusCode = (int)HttpStatusCode.InternalServerError; // 500
+                        responseModel.Errors = new List<string> { exception.InnerException?.Message ?? exception.Message };
+                        break;
+
                 }
 
                 await httpResponse.WriteAsJsonAsync(responseModel);
