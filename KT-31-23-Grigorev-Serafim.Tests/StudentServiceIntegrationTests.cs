@@ -16,6 +16,9 @@ using Xunit;
 namespace KT_31_23_Grigorev_Serafim.Tests
 {
 
+    /// <summary>
+    /// Интеграционные тесты для проверки бизнес-логики <see cref="StudentService"/> с использованием In-Memory БД.
+    /// </summary>
     public class StudentServiceIntegrationTests
     {
 
@@ -24,16 +27,23 @@ namespace KT_31_23_Grigorev_Serafim.Tests
 
         public StudentServiceIntegrationTests()
         {
+
             // Создаем уникальную базу данных в памяти для каждого запуска
             _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
+
         }
 
 
+        /// <summary>
+        /// Проверяет фильтрацию студентов по названию группы (например, "КТ-31-23")
+        /// и убеждается, что из БД возвращаются только студенты этой группы.
+        /// </summary>
         [Fact]
         public async Task GetStudentsByFilterAsync_FilterByGroupKT3123_ReturnsTwoStudents()
         {
+
             // Arrange
             using var context = new AppDbContext(_dbContextOptions);
 
@@ -83,12 +93,18 @@ namespace KT_31_23_Grigorev_Serafim.Tests
             // Assert
             Assert.Equal(2, studentsResult.Length);
             Assert.All(studentsResult, s => Assert.Equal("КТ-31-23", s.GroupName));
+
         }
 
 
+        /// <summary>
+        /// Проверяет добавление нового студента через сервис:
+        /// корректность формируемого DTO-ответа и сохранение записи в базе данных.
+        /// </summary>
         [Fact]
         public async Task AddStudentAsync_ValidData_CreatesStudentInDb()
         {
+
             // Arrange
             using var context = new AppDbContext(_dbContextOptions);
 
@@ -119,6 +135,7 @@ namespace KT_31_23_Grigorev_Serafim.Tests
             var dbStudent = await context.Students.FirstOrDefaultAsync(s => s.StudentId == response.StudentId);
             Assert.NotNull(dbStudent);
             Assert.Equal("Смирнов", dbStudent.LastName);
+
         }
 
     }
