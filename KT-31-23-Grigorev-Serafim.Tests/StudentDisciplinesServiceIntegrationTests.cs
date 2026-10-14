@@ -17,22 +17,8 @@ namespace KT_31_23_Grigorev_Serafim.Tests
     /// <summary>
     /// Интеграционные тесты для проверки сервиса получения отличных дисциплин <see cref="StudentDisciplinesService"/>.
     /// </summary>
-    public class StudentDisciplinesServiceIntegrationTests
+    public class StudentDisciplinesServiceIntegrationTests : IntegrationTestBase
     {
-
-        private readonly DbContextOptions<AppDbContext> _dbContextOptions;
-
-
-        public StudentDisciplinesServiceIntegrationTests()
-        {
-
-            // Уникальная база данных в памяти для каждого тестового прогона
-            _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-
-        }
-
 
         /// <summary>
         /// Проверяет выборку дисциплин по фамилии студента: попадают только дисциплины с оценкой 5, 
@@ -42,8 +28,8 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         public async Task GetExcellentDisciplinesByLastNameAsync_ValidLastName_ReturnsSortedUniqueDisciplinesWithGrade5()
         {
 
-            // Arrange (Подготовка данных)
-            using var context = new AppDbContext(_dbContextOptions);
+            // Arrange
+            using var context = CreateContext();
 
             var specialty = new Specialty { Title = "Информатика", Code = "09.03.01" };
             var group = new Group { Name = "КТ-31-23", Course = 3, Specialty = specialty };
@@ -74,13 +60,13 @@ namespace KT_31_23_Grigorev_Serafim.Tests
             var service = new StudentDisciplinesService(context);
             var filter = new StudentLastNameFilter { LastName = "Григорьев" };
 
-            // Act (Выполнение)
+            // Act
             var result = await service.GetExcellentDisciplinesByLastNameAsync(filter, CancellationToken.None);
 
-            // Assert (Проверка результатов)
+            // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Length);
-            Assert.Equal("Базы данных", result[0]); // Алфавитная сортировка: "Базы данных" идет раньше "Математика"
+            Assert.Equal("Базы данных", result[0]);         // Алфавитная сортировка: "Базы данных" идет раньше "Математика"
             Assert.Equal("Математика", result[1]);
 
         }
@@ -90,23 +76,27 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         /// Проверяет, что передача значения <c>null</c>, пустой строки или строки из пробелов 
         /// в фильтре по фамилии возвращает пустой массив без ошибок.
         /// </summary>
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("   ")]
-        public async Task GetExcellentDisciplinesByLastNameAsync_NullOrEmptyOrWhitespaceLastName_ReturnsEmptyArray(string? lastName)
+        [Fact]
+        public async Task GetExcellentDisciplinesByLastNameAsync_NullOrEmptyOrWhitespaceLastName_ReturnsEmptyArray()
         {
+
             // Arrange
-            using var context = new AppDbContext(_dbContextOptions);
-            var service = new StudentDisciplinesService(context);
-            var filter = new StudentLastNameFilter { LastName = lastName! };
+            var invalidValues = new string?[] { null, "", "   " };
 
-            // Act
-            var result = await service.GetExcellentDisciplinesByLastNameAsync(filter, CancellationToken.None);
+            foreach (var lastName in invalidValues)
+            {
+                using var context = CreateContext();
+                var service = new StudentDisciplinesService(context);
+                var filter = new StudentLastNameFilter { LastName = lastName! };
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
+                // Act
+                var result = await service.GetExcellentDisciplinesByLastNameAsync(filter, CancellationToken.None);
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.Empty(result);
+
+            }
 
         }
 
@@ -117,9 +107,8 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         [Fact]
         public async Task GetExcellentDisciplinesByLastNameAsync_CaseInsensitiveAndTrimming_ReturnsDisciplines()
         {
-
             // Arrange
-            using var context = new AppDbContext(_dbContextOptions);
+            using var context = CreateContext();
 
             var specialty = new Specialty { Title = "ПО", Code = "09.03.04" };
             var group = new Group { Name = "КТ-31-23", Course = 3, Specialty = specialty };
@@ -139,8 +128,7 @@ namespace KT_31_23_Grigorev_Serafim.Tests
             await context.SaveChangesAsync();
 
             var service = new StudentDisciplinesService(context);
-            // Передаем фамилию с разным регистром и пробелами
-            var filter = new StudentLastNameFilter { LastName = "  иВаНоВ  " };
+            var filter = new StudentLastNameFilter { LastName = "   иВаНоВ   " };
 
             // Act
             var result = await service.GetExcellentDisciplinesByLastNameAsync(filter, CancellationToken.None);
@@ -161,7 +149,7 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         {
 
             // Arrange
-            using var context = new AppDbContext(_dbContextOptions);
+            using var context = CreateContext();
 
             var specialty = new Specialty { Title = "ПО", Code = "09.03.04" };
             var group = new Group { Name = "КТ-31-23", Course = 3, Specialty = specialty };
@@ -201,8 +189,9 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         [Fact]
         public async Task GetExcellentDisciplinesByLastNameAsync_NonExistentLastName_ReturnsEmptyArray()
         {
+
             // Arrange
-            using var context = new AppDbContext(_dbContextOptions);
+            using var context = CreateContext();
             var service = new StudentDisciplinesService(context);
             var filter = new StudentLastNameFilter { LastName = "Несуществующий" };
 

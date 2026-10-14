@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using KT_31_23_Grigorev_Serafim.Database;
 using KT_31_23_Grigorev_Serafim.Filters;
@@ -19,22 +18,8 @@ namespace KT_31_23_Grigorev_Serafim.Tests
     /// <summary>
     /// Интеграционные тесты для проверки бизнес-логики <see cref="StudentService"/> с использованием In-Memory БД.
     /// </summary>
-    public class StudentServiceIntegrationTests
+    public class StudentServiceIntegrationTests : IntegrationTestBase
     {
-
-        private readonly DbContextOptions<AppDbContext> _dbContextOptions;
-
-
-        public StudentServiceIntegrationTests()
-        {
-
-            // Создаем уникальную базу данных в памяти для каждого запуска
-            _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-
-        }
-
 
         /// <summary>
         /// Проверяет фильтрацию студентов по названию группы (например, "КТ-31-23")
@@ -45,7 +30,7 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         {
 
             // Arrange
-            using var context = new AppDbContext(_dbContextOptions);
+            using var context = CreateContext();
 
             var specialty = new Specialty { Title = "Информатика", Code = "09.03.01" };
 
@@ -106,7 +91,7 @@ namespace KT_31_23_Grigorev_Serafim.Tests
         {
 
             // Arrange
-            using var context = new AppDbContext(_dbContextOptions);
+            using var context = CreateContext();
 
             var group = new Group
             {
