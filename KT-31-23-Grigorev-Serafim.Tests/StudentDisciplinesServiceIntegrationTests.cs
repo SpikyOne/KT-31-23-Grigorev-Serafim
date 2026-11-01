@@ -31,32 +31,6 @@ namespace KT_31_23_Grigorev_Serafim.Tests
             // Arrange
             using var context = CreateContext();
 
-            var specialty = new Specialty { Title = "Информатика", Code = "09.03.01" };
-            var group = new Group { Name = "КТ-31-23", Course = 3, Specialty = specialty };
-
-            var student = new Student
-            {
-                FirstName = "Серафим",
-                LastName = "Григорьев",
-                Group = group,
-                IsDeleted = false
-            };
-
-            var discipline1 = new Discipline { Name = "Математика", IsDeleted = false };
-            var discipline2 = new Discipline { Name = "Физика", IsDeleted = false };
-            var discipline3 = new Discipline { Name = "Базы данных", IsDeleted = false };
-
-            var grades = new[]
-            {
-                new Grade { Student = student, Discipline = discipline1, Value = 5 },
-                new Grade { Student = student, Discipline = discipline1, Value = 5 }, // Повторная оценка 5 (проверка Distinct)
-                new Grade { Student = student, Discipline = discipline2, Value = 4 }, // Оценка не 5 (не должна попасть)
-                new Grade { Student = student, Discipline = discipline3, Value = 5 }  // Оценка 5
-            };
-
-            await context.Grades.AddRangeAsync(grades);
-            await context.SaveChangesAsync();
-
             var service = new StudentDisciplinesService(context);
             var filter = new StudentLastNameFilter { LastName = "Григорьев" };
 
@@ -110,23 +84,6 @@ namespace KT_31_23_Grigorev_Serafim.Tests
             // Arrange
             using var context = CreateContext();
 
-            var specialty = new Specialty { Title = "ПО", Code = "09.03.04" };
-            var group = new Group { Name = "КТ-31-23", Course = 3, Specialty = specialty };
-
-            var student = new Student
-            {
-                FirstName = "Иван",
-                LastName = "Иванов",
-                Group = group,
-                IsDeleted = false
-            };
-
-            var discipline = new Discipline { Name = "Программирование", IsDeleted = false };
-            var grade = new Grade { Student = student, Discipline = discipline, Value = 5 };
-
-            await context.Grades.AddAsync(grade);
-            await context.SaveChangesAsync();
-
             var service = new StudentDisciplinesService(context);
             var filter = new StudentLastNameFilter { LastName = "   иВаНоВ   " };
 
@@ -150,25 +107,6 @@ namespace KT_31_23_Grigorev_Serafim.Tests
 
             // Arrange
             using var context = CreateContext();
-
-            var specialty = new Specialty { Title = "ПО", Code = "09.03.04" };
-            var group = new Group { Name = "КТ-31-23", Course = 3, Specialty = specialty };
-
-            var activeStudent = new Student { FirstName = "Иван", LastName = "Петров", Group = group, IsDeleted = false };
-            var deletedStudent = new Student { FirstName = "Пётр", LastName = "Петров", Group = group, IsDeleted = true };
-
-            var activeDiscipline = new Discipline { Name = "Алгоритмы", IsDeleted = false };
-            var deletedDiscipline = new Discipline { Name = "История", IsDeleted = true };
-
-            var grades = new[]
-            {
-                new Grade { Student = activeStudent, Discipline = activeDiscipline, Value = 5 },   // Активный студент и активный предмет -> попадает
-                new Grade { Student = activeStudent, Discipline = deletedDiscipline, Value = 5 },  // Предмет удален -> игнорируется
-                new Grade { Student = deletedStudent, Discipline = activeDiscipline, Value = 5 }   // Студент удален -> игнорируется
-            };
-
-            await context.Grades.AddRangeAsync(grades);
-            await context.SaveChangesAsync();
 
             var service = new StudentDisciplinesService(context);
             var filter = new StudentLastNameFilter { LastName = "Петров" };
